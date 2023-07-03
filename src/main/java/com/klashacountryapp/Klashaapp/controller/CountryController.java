@@ -1,6 +1,7 @@
 package com.klashacountryapp.Klashaapp.controller;
 
 import com.klashacountryapp.Klashaapp.dtos.request.CountryApiRequest;
+import com.klashacountryapp.Klashaapp.dtos.request.CountryCitiesPopulationDataRequest;
 import com.klashacountryapp.Klashaapp.service.CountryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -39,7 +40,12 @@ public class CountryController {
     }
 
     @GetMapping("/cities/population-by-size")
-    public ResponseEntity<Object> getCountryCitiesBySize(@RequestBody CountryApiRequest queryParams) throws IOException {
-        return ResponseEntity.ok(countryService.getCountryCitiesByPopulation(queryParams));
+    public ResponseEntity<Object> getCountryCitiesBySize(@RequestBody CountryCitiesPopulationDataRequest queryParams) throws IOException {
+        return ResponseEntity.ok(countryService.getCountryCitiesByPopulationAsRequested(queryParams));
     }
+
+//    @GetMapping("/population-by-size")
+//    public ResponseEntity<Object> getCountryPopulationByCitySize(@RequestBody CountryCitiesPopulationDataRequest queryParams) throws IOException {
+//        return ResponseEntity.ok(countryService.getCountryCitiesByPopulationAsRequested(queryParams));
+//    }
 }

@@ -14,6 +14,6 @@ import lombok.NoArgsConstructor;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class CountryCitiesPopulationDataRequest {
-    private String country;
+//    private String country;
     private int limit;
 }
