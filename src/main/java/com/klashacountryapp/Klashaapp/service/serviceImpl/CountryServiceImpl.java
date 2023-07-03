@@ -15,6 +15,7 @@ import com.klashacountryapp.Klashaapp.dtos.response.countryCurrency.CountryCurre
 import com.klashacountryapp.Klashaapp.dtos.response.countryPopulation.CountryPopulation;
 import com.klashacountryapp.Klashaapp.dtos.response.countryPopulation.PopulationCount;
 import com.klashacountryapp.Klashaapp.dtos.response.countryPosition.CountryPosition;
+import com.klashacountryapp.Klashaapp.exceptions.BadRequestException;
 import com.klashacountryapp.Klashaapp.helperMethods.AppUtilsMethods;
 import com.klashacountryapp.Klashaapp.service.CountryService;
 import lombok.RequiredArgsConstructor;
@@ -92,6 +93,9 @@ public class CountryServiceImpl implements CountryService {
 
     @Override
     public Object getCountryCitiesByPopulation(CountryApiRequest query) throws IOException {
+        if(query.getLimit()==0) {
+            throw new BadRequestException("Must provide a limit");
+        }
         query.setOrder("dsc");
         query.setOrderBy("value");
         return appUtilsMethods.getCountryCitiesPopulationByQuery(query);

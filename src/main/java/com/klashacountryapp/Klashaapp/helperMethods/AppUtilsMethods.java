@@ -103,14 +103,11 @@ public class AppUtilsMethods {
     }
 
 
-
     public CountryCitiesPopulationData getCountryCitiesPopulationByQuery(CountryApiRequest query) throws IOException {
         String apiUrl = baseUrl+"/population/cities/filter";
         var countryCitiesPopulationData = callCountryAndCityApi(query,apiUrl);
         return (CountryCitiesPopulationData) convertToEntity(countryCitiesPopulationData, CountryCitiesPopulationData.class);
     }
-
-
 
     protected String callCountryAndCityApi(CountryApiRequest country, String apiUrl) throws IOException {
         HttpPost httpPost = new HttpPost(apiUrl);
