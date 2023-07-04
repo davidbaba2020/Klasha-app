@@ -17,7 +17,7 @@ import java.util.ArrayList;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class CountryCitiesPopulationData {
-    public boolean error;
-    public String msg;
+//    public boolean error;
+//    public String msg;
     public ArrayList<Datum> data;
 }

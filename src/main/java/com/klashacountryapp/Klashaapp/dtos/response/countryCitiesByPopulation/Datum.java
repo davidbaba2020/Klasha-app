@@ -16,5 +16,6 @@ import java.util.ArrayList;
 public class Datum{
     public String city;
     public String country;
-    public ArrayList<PopulationCountCities> populationCounts;
+//    public ArrayList<PopulationCountCities> populationCounts;
+    public ArrayList<PopulationCountCity> populationCounts;
 }

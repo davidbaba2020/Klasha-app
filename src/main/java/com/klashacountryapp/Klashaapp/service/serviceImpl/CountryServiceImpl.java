@@ -1,16 +1,15 @@
 package com.klashacountryapp.Klashaapp.service.serviceImpl;
 
 
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.klashacountryapp.Klashaapp.dtos.CountryDataDtoV1;
 import com.klashacountryapp.Klashaapp.dtos.LOCATION;
 import com.klashacountryapp.Klashaapp.dtos.request.CountryApiRequest;
 import com.klashacountryapp.Klashaapp.dtos.request.CountryCitiesPopulationDataRequest;
 import com.klashacountryapp.Klashaapp.dtos.response.CurrentPopulation;
 import com.klashacountryapp.Klashaapp.dtos.response.countryCapitalDto.CountryCapital;
-import com.klashacountryapp.Klashaapp.dtos.response.countryCitiesByPopulation.CountryCitiesPopulationData;
-import com.klashacountryapp.Klashaapp.dtos.response.countryCitiesByPopulation.Datum;
-import com.klashacountryapp.Klashaapp.dtos.response.countryCitiesByPopulation.PopulationCountCities;
-import com.klashacountryapp.Klashaapp.dtos.response.countryCitiesByPopulation.ResponseForPopulationCities;
+import com.klashacountryapp.Klashaapp.dtos.response.countryCitiesByPopulation.*;
 import com.klashacountryapp.Klashaapp.dtos.response.countryCurrency.CountryCurrency;
 import com.klashacountryapp.Klashaapp.dtos.response.countryPopulation.CountryPopulation;
 import com.klashacountryapp.Klashaapp.dtos.response.countryPopulation.PopulationCount;
@@ -26,12 +25,15 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class CountryServiceImpl implements CountryService {
 
     private final AppUtilsMethods appUtilsMethods;
+    private final ObjectMapper objectMapper;
+
 
     @Value("${oder.for.country.population.fetch}")
     String order;
@@ -39,7 +41,10 @@ public class CountryServiceImpl implements CountryService {
     @Value("${oderBy.for.country.population.fetch}")
     String orderBy;
     @Override
-    public Object getCountryInformations(CountryApiRequest country) throws IOException {
+    public Object getCountryInformations(String c) throws IOException {
+        CountryApiRequest country = CountryApiRequest.builder()
+                .country(c)
+                .build();
         CountryPopulation populationDetails = appUtilsMethods.getCountryPopulation(country);
         CountryCapital capitalCity = appUtilsMethods.getCountryCapitalCity(country);
         CountryPosition positionLocation = appUtilsMethods.getCountryPosition(country);
@@ -104,12 +109,13 @@ public class CountryServiceImpl implements CountryService {
 
     @Override
     public Object getCountryCitiesByPopulationAsRequested(CountryCitiesPopulationDataRequest q) throws IOException {
-        Map<String, Object> countryCities = new HashMap<>();
-        List<ResponseForPopulationCities> citiesPopulation = new ArrayList<>();
-        List<Map<String, Object>> responseForCountriesCitiesPopulation = new ArrayList<>();
+        List<DatumToReturn> citiesPopulation = new ArrayList<>();
         ArrayList<String> countries = new ArrayList<>(Arrays.asList("Italy", "New Zealand", "Ghana"));
-        CountryCitiesPopulationData response = new CountryCitiesPopulationData();
+        List<DatumToReturn> response = null;
+        List<ResponseForPopulationCities> cities = new ArrayList<>();
         ResponseForPopulationCities r = new ResponseForPopulationCities();
+        CountryCitiesPopulationData d = null;
+        List<CountryCitiesPopulationData> dList = new ArrayList<>();
         for (String country : countries) {
             CountryApiRequest query = CountryApiRequest.builder()
                     .country(country)
@@ -117,22 +123,21 @@ public class CountryServiceImpl implements CountryService {
                     .order(order)
                     .orderBy(orderBy)
                     .build();
-            response = appUtilsMethods.getCountryCitiesPopulationByQuery(query);
-            for (Datum d : response.getData()){
-                PopulationCountCities p = d.getPopulationCounts().get(d.getPopulationCounts().size()-1);
-                r = ResponseForPopulationCities.builder()
-                        .country(response.getData().get(0).getCountry())
-                        .dateDataRetrieved(LocalDate.now())
-                        .populationYear(p.getYear())
-                        .cityName(response.getData().get(0).getCity())
-                        .populationSize(p.getValue())
-                        .build();
-            citiesPopulation.add(r);
-            }
-//                countryCities.put(country,citiesPopulation);
-        }
+            d = appUtilsMethods.getCountryCitiesPopulationByQuery(query);
+            dList.add(d);
 
-        return citiesPopulation;
+        }
+        return dList.stream()
+                .flatMap(ccP -> ccP.getData().stream())
+                .map(du -> {
+                    PopulationCountCity p = du.getPopulationCounts().get(du.getPopulationCounts().size() - 1);
+                    return DatumToReturn.builder()
+                            .city(du.getCity())
+                            .country(du.getCountry())
+                            .population(p)
+                            .build();
+                })
+                .collect(Collectors.toList());
     }
 
 }

@@ -103,10 +103,22 @@ public class AppUtilsMethods {
     }
 
 
+//    public CountryCitiesPopulationData getCountryCitiesPopulationByQuery(CountryApiRequest query) throws IOException {
     public CountryCitiesPopulationData getCountryCitiesPopulationByQuery(CountryApiRequest query) throws IOException {
         String apiUrl = baseUrl+"/population/cities/filter";
         var countryCitiesPopulationData = callCountryAndCityApi(query,apiUrl);
-        return (CountryCitiesPopulationData) convertToEntity(countryCitiesPopulationData, CountryCitiesPopulationData.class);
+        CountryCitiesPopulationData c =  (CountryCitiesPopulationData) convertToEntity(countryCitiesPopulationData, CountryCitiesPopulationData.class);
+//        PopulationCountCities y = c.getData().get(c.getData().size()-1).getPopulationCounts().get(c.getData().get(c.getData().size()-1).getPopulationCounts().size()-1);
+//        for(PopulationCountCities p : y){
+//`
+//        }
+//        DatumToReturn d = DatumToReturn.builder()
+//                .city(c.getData().get(0).getCity())
+//                .country(c.getData().get(0).getCountry())
+//                .population(y)
+//                .build();
+//        return (CountryCitiesPopulationData) convertToEntity(countryCitiesPopulationData, CountryCitiesPopulationData.class);
+        return c;
     }
 
     protected String callCountryAndCityApi(CountryApiRequest country, String apiUrl) throws IOException {

@@ -7,20 +7,15 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
-
-
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ResponseForPopulationCities {
-    private String country;
-    private LocalDate dateDataRetrieved;
-    private String cityName;
-    private String populationYear;
-    private String populationSize;
-
+public class PopulationCountCity {
+    private String year;
+    private String value;
+//    private String sex;
+//    private String reliabilty;
 }

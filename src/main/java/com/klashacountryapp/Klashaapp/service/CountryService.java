@@ -8,7 +8,7 @@ import java.io.IOException;
 public interface CountryService {
 
 
-    Object getCountryInformations(CountryApiRequest country) throws IOException;
+    Object getCountryInformations(String country) throws IOException;
 
     Object getCountryStates(CountryApiRequest country) throws IOException;
 
